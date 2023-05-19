@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'Form.ui'
+# Form implementation generated from reading ui file 'Form_n.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.7
 #
@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1103, 699)
+        MainWindow.resize(1097, 699)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setStyleSheet("\n"
 "font: 16pt \"Consolas\";\n"
@@ -79,8 +79,13 @@ class Ui_MainWindow(object):
         self.pushButton_4.setMinimumSize(QtCore.QSize(0, 48))
         self.pushButton_4.setObjectName("pushButton_4")
         self.horizontalLayout.addWidget(self.pushButton_4)
+        self.pushButton_16 = QtWidgets.QPushButton(self.horizontalLayoutWidget)
+        self.pushButton_16.setMinimumSize(QtCore.QSize(0, 48))
+        self.pushButton_16.setStyleSheet("")
+        self.pushButton_16.setObjectName("pushButton_16")
+        self.horizontalLayout.addWidget(self.pushButton_16)
         self.line = QtWidgets.QFrame(self.tab)
-        self.line.setGeometry(QtCore.QRect(-10, 60, 221, 3))
+        self.line.setGeometry(QtCore.QRect(-10, 60, 180, 3))
         self.line.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.line.setFrameShape(QtWidgets.QFrame.HLine)
         self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
@@ -491,8 +496,13 @@ class Ui_MainWindow(object):
         self.pushButton_6.setMinimumSize(QtCore.QSize(0, 48))
         self.pushButton_6.setObjectName("pushButton_6")
         self.horizontalLayout_2.addWidget(self.pushButton_6)
+        self.pushButton_17 = QtWidgets.QPushButton(self.horizontalLayoutWidget_2)
+        self.pushButton_17.setMinimumSize(QtCore.QSize(0, 48))
+        self.pushButton_17.setStyleSheet("")
+        self.pushButton_17.setObjectName("pushButton_17")
+        self.horizontalLayout_2.addWidget(self.pushButton_17)
         self.line_2 = QtWidgets.QFrame(self.tab_2)
-        self.line_2.setGeometry(QtCore.QRect(204, 60, 221, 3))
+        self.line_2.setGeometry(QtCore.QRect(204, 60, 180, 3))
         self.line_2.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
@@ -692,8 +702,13 @@ class Ui_MainWindow(object):
         self.pushButton_44.setMinimumSize(QtCore.QSize(0, 48))
         self.pushButton_44.setObjectName("pushButton_44")
         self.horizontalLayout_9.addWidget(self.pushButton_44)
+        self.pushButton_18 = QtWidgets.QPushButton(self.horizontalLayoutWidget_9)
+        self.pushButton_18.setMinimumSize(QtCore.QSize(0, 48))
+        self.pushButton_18.setStyleSheet("")
+        self.pushButton_18.setObjectName("pushButton_18")
+        self.horizontalLayout_9.addWidget(self.pushButton_18)
         self.line_4 = QtWidgets.QFrame(self.tab_4)
-        self.line_4.setGeometry(QtCore.QRect(430, 60, 221, 3))
+        self.line_4.setGeometry(QtCore.QRect(360, 60, 180, 3))
         self.line_4.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.line_4.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_4.setFrameShadow(QtWidgets.QFrame.Sunken)
@@ -786,8 +801,13 @@ class Ui_MainWindow(object):
         self.pushButton_32.setMinimumSize(QtCore.QSize(0, 48))
         self.pushButton_32.setObjectName("pushButton_32")
         self.horizontalLayout_8.addWidget(self.pushButton_32)
+        self.pushButton_19 = QtWidgets.QPushButton(self.horizontalLayoutWidget_8)
+        self.pushButton_19.setMinimumSize(QtCore.QSize(0, 48))
+        self.pushButton_19.setStyleSheet("")
+        self.pushButton_19.setObjectName("pushButton_19")
+        self.horizontalLayout_8.addWidget(self.pushButton_19)
         self.line_7 = QtWidgets.QFrame(self.tab_7)
-        self.line_7.setGeometry(QtCore.QRect(653, 60, 221, 3))
+        self.line_7.setGeometry(QtCore.QRect(543, 60, 180, 3))
         self.line_7.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.line_7.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_7.setFrameShadow(QtWidgets.QFrame.Sunken)
@@ -1127,8 +1147,12 @@ class Ui_MainWindow(object):
         self.pushButton_9.setMinimumSize(QtCore.QSize(0, 48))
         self.pushButton_9.setObjectName("pushButton_9")
         self.horizontalLayout_3.addWidget(self.pushButton_9)
+        self.pushButton_46 = QtWidgets.QPushButton(self.horizontalLayoutWidget_3)
+        self.pushButton_46.setMinimumSize(QtCore.QSize(0, 48))
+        self.pushButton_46.setObjectName("pushButton_46")
+        self.horizontalLayout_3.addWidget(self.pushButton_46)
         self.line_3 = QtWidgets.QFrame(self.tab_3)
-        self.line_3.setGeometry(QtCore.QRect(873, 60, 221, 3))
+        self.line_3.setGeometry(QtCore.QRect(730, 60, 180, 3))
         self.line_3.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.line_3.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_3.setFrameShadow(QtWidgets.QFrame.Sunken)
@@ -1249,6 +1273,164 @@ class Ui_MainWindow(object):
         self.label_21.setStyleSheet("color: rgb(255, 255, 255);")
         self.label_21.setObjectName("label_21")
         self.tabWidget.addTab(self.tab_3, "")
+        self.tab_5 = QtWidgets.QWidget()
+        self.tab_5.setObjectName("tab_5")
+        self.frame_5 = QtWidgets.QFrame(self.tab_5)
+        self.frame_5.setGeometry(QtCore.QRect(-10, 10, 1111, 51))
+        self.frame_5.setStyleSheet("QPushButton{\n"
+"    border: 1px solid rgb(35, 35, 35);\n"
+"    background-color: rgb(35, 35, 35);\n"
+"    border-radius: 4px;\n"
+"    color: rgb(230, 230, 230);\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"    background-color: rgb(0, 65, 65);\n"
+"    border: 1px solid rgb(0, 35, 35);\n"
+"}\n"
+"QPushButton:pressed{\n"
+"    background-color: rgb(0, 35, 35);\n"
+"    border: 1px solid rgb(0, 15, 15);\n"
+"}")
+        self.frame_5.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_5.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_5.setObjectName("frame_5")
+        self.horizontalLayoutWidget_4 = QtWidgets.QWidget(self.frame_5)
+        self.horizontalLayoutWidget_4.setGeometry(QtCore.QRect(-4, 0, 1111, 51))
+        self.horizontalLayoutWidget_4.setObjectName("horizontalLayoutWidget_4")
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget_4)
+        self.horizontalLayout_4.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
+        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_4.setSpacing(1)
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.pushButton_20 = QtWidgets.QPushButton(self.horizontalLayoutWidget_4)
+        self.pushButton_20.setMinimumSize(QtCore.QSize(0, 48))
+        self.pushButton_20.setStyleSheet("")
+        self.pushButton_20.setObjectName("pushButton_20")
+        self.horizontalLayout_4.addWidget(self.pushButton_20)
+        self.pushButton_21 = QtWidgets.QPushButton(self.horizontalLayoutWidget_4)
+        self.pushButton_21.setMinimumSize(QtCore.QSize(0, 48))
+        self.pushButton_21.setStyleSheet("")
+        self.pushButton_21.setObjectName("pushButton_21")
+        self.horizontalLayout_4.addWidget(self.pushButton_21)
+        self.pushButton_22 = QtWidgets.QPushButton(self.horizontalLayoutWidget_4)
+        self.pushButton_22.setMinimumSize(QtCore.QSize(0, 48))
+        self.pushButton_22.setStyleSheet("")
+        self.pushButton_22.setObjectName("pushButton_22")
+        self.horizontalLayout_4.addWidget(self.pushButton_22)
+        self.pushButton_47 = QtWidgets.QPushButton(self.horizontalLayoutWidget_4)
+        self.pushButton_47.setMinimumSize(QtCore.QSize(0, 48))
+        self.pushButton_47.setObjectName("pushButton_47")
+        self.horizontalLayout_4.addWidget(self.pushButton_47)
+        self.pushButton_23 = QtWidgets.QPushButton(self.horizontalLayoutWidget_4)
+        self.pushButton_23.setMinimumSize(QtCore.QSize(0, 48))
+        self.pushButton_23.setObjectName("pushButton_23")
+        self.horizontalLayout_4.addWidget(self.pushButton_23)
+        self.pushButton_25 = QtWidgets.QPushButton(self.horizontalLayoutWidget_4)
+        self.pushButton_25.setMinimumSize(QtCore.QSize(0, 48))
+        self.pushButton_25.setStyleSheet("")
+        self.pushButton_25.setObjectName("pushButton_25")
+        self.horizontalLayout_4.addWidget(self.pushButton_25)
+        self.line_5 = QtWidgets.QFrame(self.tab_5)
+        self.line_5.setGeometry(QtCore.QRect(910, 60, 190, 3))
+        self.line_5.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.line_5.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_5.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_5.setObjectName("line_5")
+        self.label_31 = QtWidgets.QLabel(self.tab_5)
+        self.label_31.setGeometry(QtCore.QRect(560, 70, 191, 51))
+        self.label_31.setStyleSheet("color: rgb(230, 230, 230);")
+        self.label_31.setObjectName("label_31")
+        self.spinBox_4 = QtWidgets.QSpinBox(self.tab_5)
+        self.spinBox_4.setGeometry(QtCore.QRect(760, 70, 101, 51))
+        self.spinBox_4.setStyleSheet("color: rgb(235, 235, 235);\n"
+"font: 18pt \"Segoe UI\";\n"
+"border: 1px solid rgb(59, 59, 59);")
+        self.spinBox_4.setMaximum(32)
+        self.spinBox_4.setObjectName("spinBox_4")
+        self.spinBox_8 = QtWidgets.QSpinBox(self.tab_5)
+        self.spinBox_8.setGeometry(QtCore.QRect(870, 70, 101, 51))
+        self.spinBox_8.setStyleSheet("color: rgb(235, 235, 235);\n"
+"font: 18pt \"Segoe UI\";\n"
+"border: 1px solid rgb(59, 59, 59);")
+        self.spinBox_8.setMaximum(32)
+        self.spinBox_8.setObjectName("spinBox_8")
+        self.spinBox_9 = QtWidgets.QSpinBox(self.tab_5)
+        self.spinBox_9.setGeometry(QtCore.QRect(980, 70, 101, 51))
+        self.spinBox_9.setStyleSheet("color: rgb(235, 235, 235);\n"
+"font: 18pt \"Segoe UI\";\n"
+"border: 1px solid rgb(59, 59, 59);")
+        self.spinBox_9.setMaximum(32)
+        self.spinBox_9.setObjectName("spinBox_9")
+        self.label_32 = QtWidgets.QLabel(self.tab_5)
+        self.label_32.setGeometry(QtCore.QRect(10, 70, 541, 51))
+        self.label_32.setStyleSheet("color: rgb(230, 230, 230);")
+        self.label_32.setObjectName("label_32")
+        self.plainTextEdit_3 = QtWidgets.QPlainTextEdit(self.tab_5)
+        self.plainTextEdit_3.setGeometry(QtCore.QRect(10, 130, 541, 501))
+        self.plainTextEdit_3.setStyleSheet("color: rgb(230, 230, 230);\n"
+"font: 16pt \"Consolas\";\n"
+"background-color: rgb(35, 35, 35);")
+        self.plainTextEdit_3.setObjectName("plainTextEdit_3")
+        self.frame_6 = QtWidgets.QFrame(self.tab_5)
+        self.frame_6.setGeometry(QtCore.QRect(560, 650, 521, 41))
+        self.frame_6.setStyleSheet("QPushButton{\n"
+"    border: 1px solid rgb(230, 230, 230);\n"
+"    background-color: rgb(230, 230, 230);\n"
+"    border-radius: 4px;\n"
+"    color: rgb(35, 35, 35);\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"    background-color: rgb(0, 65, 65);\n"
+"    border: 1px solid rgb(0, 35, 35);\n"
+"}\n"
+"QPushButton:pressed{\n"
+"    color: rgb(255, 255, 255);\n"
+"    background-color: rgb(0, 35, 35);\n"
+"    border: 1px solid rgb(0, 15, 15);\n"
+"}")
+        self.frame_6.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_6.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_6.setObjectName("frame_6")
+        self.pushButton_48 = QtWidgets.QPushButton(self.frame_6)
+        self.pushButton_48.setGeometry(QtCore.QRect(10, 0, 511, 40))
+        self.pushButton_48.setMinimumSize(QtCore.QSize(0, 40))
+        self.pushButton_48.setStyleSheet("")
+        self.pushButton_48.setObjectName("pushButton_48")
+        self.plainTextEdit_10 = QtWidgets.QPlainTextEdit(self.tab_5)
+        self.plainTextEdit_10.setGeometry(QtCore.QRect(560, 130, 521, 501))
+        self.plainTextEdit_10.setStyleSheet("color: rgb(230, 230, 230);\n"
+"font: 16pt \"Consolas\";\n"
+"background-color: rgb(35, 35, 35);")
+        self.plainTextEdit_10.setObjectName("plainTextEdit_10")
+        self.frame_7 = QtWidgets.QFrame(self.tab_5)
+        self.frame_7.setGeometry(QtCore.QRect(10, 650, 541, 41))
+        self.frame_7.setStyleSheet("QPushButton{\n"
+"    border: 1px solid rgb(230, 230, 230);\n"
+"    background-color: rgb(230, 230, 230);\n"
+"    border-radius: 4px;\n"
+"    color: rgb(35, 35, 35);\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"    background-color: rgb(0, 65, 65);\n"
+"    border: 1px solid rgb(0, 35, 35);\n"
+"}\n"
+"QPushButton:pressed{\n"
+"    color: rgb(255, 255, 255);\n"
+"    background-color: rgb(0, 35, 35);\n"
+"    border: 1px solid rgb(0, 15, 15);\n"
+"}")
+        self.frame_7.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_7.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_7.setObjectName("frame_7")
+        self.pushButton_49 = QtWidgets.QPushButton(self.frame_7)
+        self.pushButton_49.setGeometry(QtCore.QRect(10, 0, 521, 40))
+        self.pushButton_49.setMinimumSize(QtCore.QSize(0, 40))
+        self.pushButton_49.setStyleSheet("")
+        self.pushButton_49.setObjectName("pushButton_49")
+        self.tabWidget.addTab(self.tab_5, "")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -1259,10 +1441,11 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "ZEnigma"))
         self.pushButton.setText(_translate("MainWindow", "Энигма"))
-        self.pushButton_2.setText(_translate("MainWindow", "Работа с текстом"))
+        self.pushButton_2.setText(_translate("MainWindow", "Текст"))
         self.pushButton_10.setText(_translate("MainWindow", "Криптоанализ"))
         self.pushButton_26.setText(_translate("MainWindow", "Настройка"))
-        self.pushButton_4.setText(_translate("MainWindow", "Работа с файлами"))
+        self.pushButton_4.setText(_translate("MainWindow", "Файлы"))
+        self.pushButton_16.setText(_translate("MainWindow", "Нейросеть"))
         item = self.tableWidget.verticalHeaderItem(0)
         item.setText(_translate("MainWindow", "1"))
         item = self.tableWidget.verticalHeaderItem(1)
@@ -1457,10 +1640,11 @@ class Ui_MainWindow(object):
         self.plainTextEdit_2.setPlaceholderText(_translate("MainWindow", "Здесь будет результат"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Шифрование"))
         self.pushButton_3.setText(_translate("MainWindow", "Энигма"))
-        self.pushButton_5.setText(_translate("MainWindow", "Работа с текстом"))
+        self.pushButton_5.setText(_translate("MainWindow", "Текст"))
         self.pushButton_11.setText(_translate("MainWindow", "Криптоанализ"))
         self.pushButton_27.setText(_translate("MainWindow", "Настройка"))
-        self.pushButton_6.setText(_translate("MainWindow", "Работа с файлами"))
+        self.pushButton_6.setText(_translate("MainWindow", "Файлы"))
+        self.pushButton_17.setText(_translate("MainWindow", "Нейросеть"))
         self.label_3.setText(_translate("MainWindow", "Введите текст:"))
         self.label_5.setText(_translate("MainWindow", "Здесь будет текст после прохождения Энигмы:"))
         self.pushButton_34.setText(_translate("MainWindow", "Использовать"))
@@ -1482,19 +1666,21 @@ class Ui_MainWindow(object):
         self.comboBox_2.setItemText(1, _translate("MainWindow", "ENG"))
         self.label_10.setText(_translate("MainWindow", "Возможные положения роторов:"))
         self.pushButton_41.setText(_translate("MainWindow", "Энигма"))
-        self.pushButton_42.setText(_translate("MainWindow", "Работа с текстом"))
+        self.pushButton_42.setText(_translate("MainWindow", "Текст"))
         self.pushButton_15.setText(_translate("MainWindow", "Криптоанализ"))
         self.pushButton_43.setText(_translate("MainWindow", "Настройка"))
-        self.pushButton_44.setText(_translate("MainWindow", "Работа с файлами"))
+        self.pushButton_44.setText(_translate("MainWindow", "Файлы"))
+        self.pushButton_18.setText(_translate("MainWindow", "Нейросети"))
         self.label_30.setText(_translate("MainWindow", "Работа с текстом:"))
         self.plainTextEdit_9.setPlaceholderText(_translate("MainWindow", "Введите текст для работы с ним"))
-        self.pushButton_45.setText(_translate("MainWindow", "Найти ротор для предложения"))
+        self.pushButton_45.setText(_translate("MainWindow", "Найти ротор для текста"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_4), _translate("MainWindow", "Криптоанализ"))
         self.pushButton_29.setText(_translate("MainWindow", "Энигма"))
-        self.pushButton_30.setText(_translate("MainWindow", "Работа с текстом"))
+        self.pushButton_30.setText(_translate("MainWindow", "Текст"))
         self.pushButton_12.setText(_translate("MainWindow", "Криптоанализ"))
         self.pushButton_31.setText(_translate("MainWindow", "Настройка"))
-        self.pushButton_32.setText(_translate("MainWindow", "Работа с файлами"))
+        self.pushButton_32.setText(_translate("MainWindow", "Файлы"))
+        self.pushButton_19.setText(_translate("MainWindow", "Нейросети"))
         self.label_11.setText(_translate("MainWindow", "Номер ротора:"))
         self.label_12.setText(_translate("MainWindow", "Значение ротора:"))
         self.label_13.setText(_translate("MainWindow", "III"))
@@ -1614,10 +1800,11 @@ class Ui_MainWindow(object):
         self.label_26.setText(_translate("MainWindow", "0"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_7), _translate("MainWindow", "Работа с Роторами"))
         self.pushButton_7.setText(_translate("MainWindow", "Энигма"))
-        self.pushButton_8.setText(_translate("MainWindow", "Работа с текстом"))
+        self.pushButton_8.setText(_translate("MainWindow", "Текст"))
         self.pushButton_14.setText(_translate("MainWindow", "Криптоанализ"))
         self.pushButton_28.setText(_translate("MainWindow", "Настройка"))
-        self.pushButton_9.setText(_translate("MainWindow", "Работа с файлами"))
+        self.pushButton_9.setText(_translate("MainWindow", "Файлы"))
+        self.pushButton_46.setText(_translate("MainWindow", "Нейросети"))
         self.pushButton_39.setText(_translate("MainWindow", "Выбрать файлы"))
         self.label_14.setText(_translate("MainWindow", "Имя файла:"))
         self.label_16.setText(_translate("MainWindow", "None"))
@@ -1629,3 +1816,16 @@ class Ui_MainWindow(object):
         self.pushButton_33.setText(_translate("MainWindow", "Использовать энигму"))
         self.label_21.setText(_translate("MainWindow", "Статус: -"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "Работа с файлами"))
+        self.pushButton_20.setText(_translate("MainWindow", "Энигма"))
+        self.pushButton_21.setText(_translate("MainWindow", "Текст"))
+        self.pushButton_22.setText(_translate("MainWindow", "Криптоанализ"))
+        self.pushButton_47.setText(_translate("MainWindow", "Настройка"))
+        self.pushButton_23.setText(_translate("MainWindow", "Файлы"))
+        self.pushButton_25.setText(_translate("MainWindow", "Нейросеть"))
+        self.label_31.setText(_translate("MainWindow", "Введите роторы:"))
+        self.label_32.setText(_translate("MainWindow", "Введите текст:"))
+        self.plainTextEdit_3.setPlaceholderText(_translate("MainWindow", "Введите сюда текст"))
+        self.pushButton_48.setText(_translate("MainWindow", "Указать папку с моделями нейросети"))
+        self.plainTextEdit_10.setPlaceholderText(_translate("MainWindow", "Здесь будет ваш текст после обработки нейросетью"))
+        self.pushButton_49.setText(_translate("MainWindow", "Использовать нейросеть"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_5), _translate("MainWindow", "Страница"))

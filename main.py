@@ -7,7 +7,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtGui import QColor
 from PyQt5.QtMultimedia import QSound
 
-from Form import Ui_MainWindow
+from Form_n import Ui_MainWindow
 
 class EngineRotor:
     def __init__(self):
@@ -835,27 +835,37 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.pushButton_10.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(2), self.changePanel.play()])
         self.ui.pushButton_26.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(3), self.changePanel.play()])
         self.ui.pushButton_4.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(4), self.changePanel.play()])
+        self.ui.pushButton_16.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(5), self.changePanel.play()])
 
         self.ui.pushButton_3.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(0), self.changePanel.play()])
         self.ui.pushButton_11.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(2), self.changePanel.play()])
         self.ui.pushButton_27.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(3), self.changePanel.play()])
         self.ui.pushButton_6.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(4), self.changePanel.play()])
+        self.ui.pushButton_17.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(5), self.changePanel.play()])
 
         self.ui.pushButton_41.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(0), self.changePanel.play()])
         self.ui.pushButton_42.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(1), self.changePanel.play()])
         self.ui.pushButton_43.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(3), self.changePanel.play()])
         self.ui.pushButton_44.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(4), self.changePanel.play()])
+        self.ui.pushButton_19.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(5), self.changePanel.play()])
 
         self.ui.pushButton_29.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(0), self.changePanel.play()])
         self.ui.pushButton_30.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(1), self.changePanel.play()])
         self.ui.pushButton_12.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(2), self.changePanel.play()])
         self.ui.pushButton_32.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(4), self.changePanel.play()])
+        self.ui.pushButton_18.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(5), self.changePanel.play()])
 
         self.ui.pushButton_7.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(0), self.changePanel.play()])
         self.ui.pushButton_8.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(1), self.changePanel.play()])
         self.ui.pushButton_14.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(2), self.changePanel.play()])
         self.ui.pushButton_28.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(3), self.changePanel.play()])
+        self.ui.pushButton_46.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(5), self.changePanel.play()])
 
+        self.ui.pushButton_20.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(0), self.changePanel.play()])
+        self.ui.pushButton_21.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(1), self.changePanel.play()])
+        self.ui.pushButton_22.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(2), self.changePanel.play()])
+        self.ui.pushButton_23.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(4), self.changePanel.play()])
+        self.ui.pushButton_47.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(3), self.changePanel.play()])
 
         self.ui.spinBox.valueChanged.connect(self.rotorPassSound.play)
         self.ui.spinBox_2.valueChanged.connect(self.rotorPassSound.play)
