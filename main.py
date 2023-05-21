@@ -3,11 +3,23 @@ import random
 import shutil
 import sys, os
 import json
+import torch
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QColor
 from PyQt5.QtMultimedia import QSound
 
 from Form_n import Ui_MainWindow
+
+class EnigmaNeural(torch.nn.Module):
+    def __init__(self):
+        super(EnigmaNeural, self).__init__()
+        self.fc1 = torch.nn.Linear(33, 36)
+        self.fc2 = torch.nn.Linear(36, 33)
+    
+    def forward(self, x):
+        x = self.fc1(x)
+        x = self.fc2(x)
+        return x
 
 class EngineRotor:
     def __init__(self):
@@ -202,7 +214,6 @@ class EnigmaEngine:
         self.RusCount = list([x for x in TempRus])
         return GoodRotors
 
-
 class EnigmaFile:
     def __init__(self, enigmadefault):
         self.Dll = ctypes.CDLL("./WorkWithFiles.dll")
@@ -242,6 +253,10 @@ class mywindow(QtWidgets.QMainWindow):
         super(mywindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+        #EnigmaNN
+        self.EnigmaNNModel = EnigmaNeural()
+        self.EnigmaNNPath = None
 
         #CPP Dll для энигмы
         self.EnigmaDefault = EnigmaEngine()
@@ -286,55 +301,119 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.tableWidget.cellClicked.connect(self.UseEnigmaFunctionWithAlpha)
         self.ui.tableWidget_3.dropEvent = self.dropEvent
 
+        self.ui.pushButton_48.clicked.connect(self.setPathForNNEnigma)
+        self.ui.pushButton_49.clicked.connect(self.useNeuralNetworkEnigma)
+
+    def useNeuralNetworkEnigma(self):
+        try:
+            text_to_crypt = self.ui.plainTextEdit_3.toPlainText().upper()
+            III = int(self.ui.spinBox_4.value())
+            II = int(self.ui.spinBox_8.value())
+            I = int(self.ui.spinBox_9.value())
+            encrypted_text = ""
+            rus = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
+            rotors = [I, II, III]
+            self.ui.listWidget_2.clear()
+            self.ui.listWidget_2.addItem("Нейросеть логи:")
+            for symbol in text_to_crypt:
+                if not (symbol in rus): 
+                    encrypted_text += symbol
+                    continue
+                
+                self.EnigmaNNModel.load_state_dict(torch.load(f"{self.EnigmaNNPath}/R_{rotors[0]}_{rotors[1]}_{rotors[2]}"))
+                rusdigit = list([1.0 if x == symbol else 0.0 for x in rus])
+                anwser = self.EnigmaNNModel(torch.Tensor(rusdigit)).tolist()
+                max_anwser = max(anwser)
+                index_anwser = anwser.index(max_anwser)
+                sum_anwser = abs(sum([x for x in range(len(anwser)) if x != index_anwser])) / 33
+                self.ui.listWidget_2.addItem(f"{symbol} -> {rus[index_anwser]} = {max_anwser/sum_anwser}")
+
+                encrypted_text += rus[index_anwser]
+                if rotors[2] + 1 > 32:
+                    rotors[2] = 0
+                    if rotors[1] + 1 > 32:
+                        rotors[1] = 0
+                        if rotors[0] + 1 > 32:
+                            rotors[0] = 0
+                        else:
+                            rotors[0] += 1
+                    else:
+                        rotors[1] += 1
+                else:
+                    rotors[2] += 1
+            
+            self.ui.plainTextEdit_10.setPlainText(encrypted_text)
+
+        except Exception as exp:
+            print("FUNCTIONRETURN:: useNeuralNetworkEnigma:\n"+str(exp))
+
+    def setPathForNNEnigma(self):
+        try:
+            self.EnigmaNNPath = QtWidgets.QFileDialog.getExistingDirectory()
+            self.ui.label_33.setText(self.EnigmaNNPath)
+        except Exception as exp:
+            print("FUNCTIONRETURN:: setPathForNNEnigma:\n"+str(exp))
+            self.ui.label_33.setText("Не выбрана директория:")
+            self.EnigmaNNPath = None
+
     def findRotorForText(self):
-        lang = self.ui.comboBox_2.currentText()
-        text_encrypted = self.ui.plainTextEdit_8.toPlainText()
-        text_source = self.ui.plainTextEdit_7.toPlainText()
-        Text = self.ui.plainTextEdit_9.toPlainText()
-        LANG = self.EnigmaDefault.RUSLANG if lang == "RUS" else self.EnigmaDefault.ENGLANG
-        Text = "".join([x for x in Text if x in LANG])
-        if text_encrypted is None or text_source is None or Text is None: return
+        try:
+            lang = self.ui.comboBox_2.currentText()
+            text_encrypted = self.ui.plainTextEdit_8.toPlainText()
+            text_source = self.ui.plainTextEdit_7.toPlainText()
+            Text = self.ui.plainTextEdit_9.toPlainText()
+            LANG = self.EnigmaDefault.RUSLANG if lang == "RUS" else self.EnigmaDefault.ENGLANG
+            Text = "".join([x for x in Text if x in LANG])
+            if text_encrypted is None or text_source is None or Text is None: return
+            
         
-    
-        items = [self.ui.listWidget.item(x).text() for x in range(self.ui.listWidget.count())]
-        self.ui.listWidget.clear()
-        for package in items:
-            Rotor = list(map(lambda x: int(x.replace("[","").replace("]","")), package.split(";")[0].split(",")))
-            StartRotor = list([x for x in Rotor])
-            if not(text_encrypted in Text): 
-                print(f"{text_encrypted=} wasn't found")
-                continue
-            start_pos = Text.find(text_encrypted)
+            items = [self.ui.listWidget.item(x).text() for x in range(self.ui.listWidget.count())]
+            self.ui.listWidget.clear()
+            for package in items:
+                Rotor = list(map(lambda x: int(x.replace("[","").replace("]","")), package.split(";")[0].split(",")))
+                StartRotor = list([x for x in Rotor])
+                if not(text_encrypted in Text): 
+                    print(f"{text_encrypted=} wasn't found")
+                    continue
+                start_pos = Text.find(text_encrypted)
 
-            if lang == "RUS": module = 33
-            elif lang == "ENG": module = 26
-        
-            Rotor[0] = Rotor[0] - start_pos
-            Rotor[1] = (Rotor[1]) - abs(Rotor[0] // module)
-            Rotor[2] = (Rotor[2]) - abs(Rotor[1] // (module * module))
+                if lang == "RUS": module = 33
+                elif lang == "ENG": module = 26
+            
+                Rotor[0] = Rotor[0] - start_pos
+                Rotor[1] = (Rotor[1]) - abs(Rotor[0] // module)
+                Rotor[2] = (Rotor[2]) - abs(Rotor[1] // (module * module))
 
-            Rotor[0] %= module
-            Rotor[1] %= module
-            Rotor[2] %= module
+                Rotor[0] %= module
+                Rotor[1] %= module
+                Rotor[2] %= module
 
-            self.ui.listWidget.addItem(f"{Rotor[0]}, {Rotor[1]}, {Rotor[2]}; if {StartRotor}")
+                self.ui.listWidget.addItem(f"{Rotor[0]}, {Rotor[1]}, {Rotor[2]}; if {StartRotor}")
+        except Exception as exp:
+            print("FUNCTIONRETURN:: findRotorForText:\n"+str(exp))
 
     def BreakEnigma(self):
-        lang = self.ui.comboBox_2.currentText()
-        input_ = self.ui.plainTextEdit_7.toPlainText()
-        output_ = self.ui.plainTextEdit_8.toPlainText()
-        rotors = []
+        try:
+            lang = self.ui.comboBox_2.currentText()
+            input_ = self.ui.plainTextEdit_7.toPlainText()
+            output_ = self.ui.plainTextEdit_8.toPlainText()
+            rotors = []
 
-        if lang == "RUS":
-            rotors = self.EnigmaDefault.RussianDecrypt(input_, output_)
-        elif lang == "ENG":
-            rotors = self.EnigmaDefault.EnglandDecrypt(input_, output_)
+            if lang == "RUS":
+                rotors = self.EnigmaDefault.RussianDecrypt(input_, output_)
+            elif lang == "ENG":
+                rotors = self.EnigmaDefault.EnglandDecrypt(input_, output_)
 
-        self.ui.listWidget.clear()
-        self.ui.listWidget.addItems(list([f"[{x[2]}, {x[1]}, {x[0]}]; {input_} -> {output_}" for x in rotors]))
+            self.ui.listWidget.clear()
+            self.ui.listWidget.addItems(list([f"[{x[2]}, {x[1]}, {x[0]}]; {input_} -> {output_}" for x in rotors]))
+        except Exception as exp:
+            print("FUNCTIONRETURN:: BreakEnigma:\n"+str(exp))
 
     def BigSetEnigmaFile(self):
-        self.EncryptDirectory()
+        try:
+            self.EncryptDirectory()
+        except Exception as exp:
+            print("FUNCTIONRETURN:: BigSetEnigmaFile:\n"+str(exp))
 
     def EncryptDirectory(self):
         try:
@@ -349,7 +428,7 @@ class mywindow(QtWidgets.QMainWindow):
                 os.remove(file)
                 self.ui.label_21.setText("Статус: "+str(self.NormalFilesArray[Id])+" завершён!")
         except Exception as exp:
-            print(exp)
+            print("FUNCTIONRETURN:: EncryptDirectory:\n"+str(exp))
 
     def LoadConfigFile(self):
         try:
@@ -391,7 +470,7 @@ class mywindow(QtWidgets.QMainWindow):
             
 
         except Exception as exp:
-            print(exp)
+            print("FUNCTIONRETURN:: LoadConfigFile:\n"+str(exp))
 
     def SaveConfigFile(self):
         try:
@@ -404,7 +483,7 @@ class mywindow(QtWidgets.QMainWindow):
             with open(path, "w", encoding="utf-16") as write_file:
                 json.dump(data, write_file, ensure_ascii=False)
         except Exception as exp:
-            print(exp)
+            print("FUNCTIONRETURN:: SaveConfigFile:\n"+str(exp))
 
     def EncryptFile(self): 
         try:
@@ -420,7 +499,7 @@ class mywindow(QtWidgets.QMainWindow):
             os.remove(self.LastFilePath)
             self.ui.label_21.setText("Статус: "+str(self.NormalPath)+" завершён!")
         except Exception as exp:
-            print(exp)
+            print("FUNCTIONRETURN:: EncryptFile:\n"+str(exp))
 
     def TakePathFFile(self):
         try:
@@ -461,7 +540,7 @@ class mywindow(QtWidgets.QMainWindow):
                 shutil.copyfile(self.NormalFilesArray[Id], self.FilesArrayToCrypt[Id])
             self.CryptIs = 1
         except Exception as exp:
-            print(exp)
+            print("FUNCTIONRETURN:: TakePathFFile:\n"+str(exp))
 
     def TakePathTFile(self):
         try:
@@ -499,7 +578,7 @@ class mywindow(QtWidgets.QMainWindow):
             shutil.copyfile(self.NormalPath, self.LastFilePath)
             self.CryptIs = 0
         except Exception as exp:
-            print(exp)
+            print("FUNCTIONRETURN:: TakePathTFile:\n"+str(exp))
 
     def ResetSwitchingPanel(self):
         try:
@@ -515,15 +594,18 @@ class mywindow(QtWidgets.QMainWindow):
                 for y in range(0, 9):
                     self.ui.tableWidget_3.setItem(x, y ,QtWidgets.QTableWidgetItem(f"{Lang[9*x+y]}"))
         except Exception as exp:
-            print(exp)
+            print("FUNCTIONRETURN:: ResetSwitchingPanel:\n"+str(exp))
 
     def TurnSwitchingPanel(self):
-        self.accept_button.play()
-        self.SwitchingPanelBool = not(self.SwitchingPanelBool)
-        if self.SwitchingPanelBool:
-            self.ui.label_15.setStyleSheet(r'color: rgb(0, 255, 0); font: 28pt "Consolas";')
-        else:
-            self.ui.label_15.setStyleSheet(r'color: rgb(230, 230, 230); font: 28pt "Consolas";')
+        try:
+            self.accept_button.play()
+            self.SwitchingPanelBool = not(self.SwitchingPanelBool)
+            if self.SwitchingPanelBool:
+                self.ui.label_15.setStyleSheet(r'color: rgb(0, 255, 0); font: 28pt "Consolas";')
+            else:
+                self.ui.label_15.setStyleSheet(r'color: rgb(230, 230, 230); font: 28pt "Consolas";')
+        except Exception as exp:
+            print("FUNCTIONRETURN:: TurnSwitchingPanel:\n"+str(exp))
 
     def dropEvent(self, event):
         try:
@@ -571,161 +653,170 @@ class mywindow(QtWidgets.QMainWindow):
             else:
                 print("Буквы уже соединены")
         except Exception as exp:
-            print(exp)
+            print("FUNCTIONRETURN:: dropEvent:\n"+str(exp))
 
     def EncryptingWord(self):
-        Text = (self.ui.plainTextEdit_5.toPlainText()).upper()
-        lang = self.ui.comboBox.currentText()
-        if self.ui.checkBox.isChecked():
-            abc = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" if "RUS" in lang.upper() else "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            Text = "".join(list([x for x in list(Text) if x in abc]))
+        try:
+            Text = (self.ui.plainTextEdit_5.toPlainText()).upper()
+            lang = self.ui.comboBox.currentText()
+            if self.ui.checkBox.isChecked():
+                abc = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" if "RUS" in lang.upper() else "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                Text = "".join(list([x for x in list(Text) if x in abc]))
 
-        if Text == "" or Text == None:
-            Text = "-"
+            if Text == "" or Text == None:
+                Text = "-"
 
-        TempFValue = str(self.ui.spinBox.value())
-        TempSValue = str(self.ui.spinBox_2.value())
-        TempTValue = str(self.ui.spinBox_3.value())
+            TempFValue = str(self.ui.spinBox.value())
+            TempSValue = str(self.ui.spinBox_2.value())
+            TempTValue = str(self.ui.spinBox_3.value())
 
-        if "RUS" in lang.upper():
-            if self.SwitchingPanelBool:
-                Text = list(Text)
-                for xPos, element in enumerate(Text):
-                    if element in self.SwitchLetters:
-                        Text[xPos] = self.SwitchLetters[element]
-                Text = "".join(Text)
-            View = self.EnigmaDefault.EncryptWord("RUS", Text)
-            if self.SwitchingPanelBool:
-                View = list(View)
-                for xPos, element in enumerate(View):
-                    if element in self.SwitchLetters:
-                        View[xPos] = self.SwitchLetters[element]
-                View = "".join(View)
-            self.ui.plainTextEdit_6.setPlainText(View)
-            self.ui.spinBox_3.setValue(int(self.EnigmaDefault.RusCount[0]))
-            self.ui.spinBox_2.setValue(int(self.EnigmaDefault.RusCount[1]))
-            self.ui.spinBox.setValue(int(self.EnigmaDefault.RusCount[2]))
-        elif "ENG" in lang.upper():
-            if self.SwitchingPanelBool:
-                Text = list(Text)
-                for xPos, element in enumerate(Text):
-                    if element in self.SwitchLetters:
-                        Text[xPos] = self.SwitchLetters[element]
-                Text = "".join(Text)
-            View = self.EnigmaDefault.EncryptWord("ENG", Text)
-            if self.SwitchingPanelBool:
-                View = list(View)
-                for xPos, element in enumerate(View):
-                    if element in self.SwitchLetters:
-                        View[xPos] = self.SwitchLetters[element]
-                View = "".join(View)
-            self.ui.plainTextEdit_6.setPlainText(View)
-            self.ui.spinBox_3.setValue(int(self.EnigmaDefault.EngCount[0]))
-            self.ui.spinBox_2.setValue(int(self.EnigmaDefault.EngCount[1]))
-            self.ui.spinBox.setValue(int(self.EnigmaDefault.EngCount[2]))   
-        self.ui.label_28.setText(TempFValue)
-        self.ui.label_29.setText(TempSValue)
-        self.ui.label_27.setText(TempTValue)
-        self.clicked_button.play()
-        del TempFValue, TempSValue, TempTValue   
+            if "RUS" in lang.upper():
+                if self.SwitchingPanelBool:
+                    Text = list(Text)
+                    for xPos, element in enumerate(Text):
+                        if element in self.SwitchLetters:
+                            Text[xPos] = self.SwitchLetters[element]
+                    Text = "".join(Text)
+                View = self.EnigmaDefault.EncryptWord("RUS", Text)
+                if self.SwitchingPanelBool:
+                    View = list(View)
+                    for xPos, element in enumerate(View):
+                        if element in self.SwitchLetters:
+                            View[xPos] = self.SwitchLetters[element]
+                    View = "".join(View)
+                self.ui.plainTextEdit_6.setPlainText(View)
+                self.ui.spinBox_3.setValue(int(self.EnigmaDefault.RusCount[0]))
+                self.ui.spinBox_2.setValue(int(self.EnigmaDefault.RusCount[1]))
+                self.ui.spinBox.setValue(int(self.EnigmaDefault.RusCount[2]))
+            elif "ENG" in lang.upper():
+                if self.SwitchingPanelBool:
+                    Text = list(Text)
+                    for xPos, element in enumerate(Text):
+                        if element in self.SwitchLetters:
+                            Text[xPos] = self.SwitchLetters[element]
+                    Text = "".join(Text)
+                View = self.EnigmaDefault.EncryptWord("ENG", Text)
+                if self.SwitchingPanelBool:
+                    View = list(View)
+                    for xPos, element in enumerate(View):
+                        if element in self.SwitchLetters:
+                            View[xPos] = self.SwitchLetters[element]
+                    View = "".join(View)
+                self.ui.plainTextEdit_6.setPlainText(View)
+                self.ui.spinBox_3.setValue(int(self.EnigmaDefault.EngCount[0]))
+                self.ui.spinBox_2.setValue(int(self.EnigmaDefault.EngCount[1]))
+                self.ui.spinBox.setValue(int(self.EnigmaDefault.EngCount[2]))   
+            self.ui.label_28.setText(TempFValue)
+            self.ui.label_29.setText(TempSValue)
+            self.ui.label_27.setText(TempTValue)
+            self.clicked_button.play()
+            del TempFValue, TempSValue, TempTValue   
+        except Exception as exp:
+            print("FUNCTIONRETURN:: EncryptingWord:\n"+str(exp))
 
     def PreEncryptingWord(self):
-        Text = (self.ui.plainTextEdit_5.toPlainText()).upper()
-        lang = self.ui.comboBox.currentText()
-        if self.ui.checkBox.isChecked():
-            abc = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" if "RUS" in lang.upper() else "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            Text = "".join(list([x for x in list(Text) if x in abc]))
+        try:
+            Text = (self.ui.plainTextEdit_5.toPlainText()).upper()
+            lang = self.ui.comboBox.currentText()
+            if self.ui.checkBox.isChecked():
+                abc = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" if "RUS" in lang.upper() else "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                Text = "".join(list([x for x in list(Text) if x in abc]))
 
-        if Text == "" or Text == None:
-            Text = "-"
+            if Text == "" or Text == None:
+                Text = "-"
 
-        if "RUS" in lang.upper():
-            SavedSettings = [0, 0, 0]
-            SavedSettings[0] = self.EnigmaDefault.RusCount[0]
-            SavedSettings[1] = self.EnigmaDefault.RusCount[1]
-            SavedSettings[2] = self.EnigmaDefault.RusCount[2]
-            if self.SwitchingPanelBool:
-                Text = list(Text)
-                for xPos, element in enumerate(Text):
-                    if element in self.SwitchLetters:
-                        Text[xPos] = self.SwitchLetters[element]
-                Text = "".join(Text)
-            preView = self.EnigmaDefault.EncryptWord("RUS", Text)
-            if self.SwitchingPanelBool:
-                preView = list(preView)
-                for xPos, element in enumerate(preView):
-                    if element in self.SwitchLetters:
-                        preView[xPos] = self.SwitchLetters[element]
-                preView = "".join(preView)
-            self.ui.plainTextEdit_6.setPlaceholderText(preView)
-            self.EnigmaDefault.RusCount[0] = SavedSettings[0]
-            self.EnigmaDefault.RusCount[1] = SavedSettings[1]
-            self.EnigmaDefault.RusCount[2] = SavedSettings[2]
-        elif "ENG" in lang.upper():
-            SavedSettings = [0, 0, 0]
-            SavedSettings[0] = self.EnigmaDefault.EngCount[0]
-            SavedSettings[1] = self.EnigmaDefault.EngCount[1]
-            SavedSettings[2] = self.EnigmaDefault.EngCount[2]
-            if self.SwitchingPanelBool:
-                Text = list(Text)
-                for xPos, element in enumerate(Text):
-                    if element in self.SwitchLetters:
-                        Text[xPos] = self.SwitchLetters[element]
-                Text = "".join(Text)
-            preView = self.EnigmaDefault.EncryptWord("ENG", Text)
-            if self.SwitchingPanelBool:
-                preView = list(preView)
-                for xPos, element in enumerate(preView):
-                    if element in self.SwitchLetters:
-                        preView[xPos] = self.SwitchLetters[element]
-                preView = "".join(preView)
-            self.ui.plainTextEdit_6.setPlaceholderText(preView)
-            self.EnigmaDefault.EngCount[0] = SavedSettings[0]
-            self.EnigmaDefault.EngCount[1] = SavedSettings[1]
-            self.EnigmaDefault.EngCount[2] = SavedSettings[2]
+            if "RUS" in lang.upper():
+                SavedSettings = [0, 0, 0]
+                SavedSettings[0] = self.EnigmaDefault.RusCount[0]
+                SavedSettings[1] = self.EnigmaDefault.RusCount[1]
+                SavedSettings[2] = self.EnigmaDefault.RusCount[2]
+                if self.SwitchingPanelBool:
+                    Text = list(Text)
+                    for xPos, element in enumerate(Text):
+                        if element in self.SwitchLetters:
+                            Text[xPos] = self.SwitchLetters[element]
+                    Text = "".join(Text)
+                preView = self.EnigmaDefault.EncryptWord("RUS", Text)
+                if self.SwitchingPanelBool:
+                    preView = list(preView)
+                    for xPos, element in enumerate(preView):
+                        if element in self.SwitchLetters:
+                            preView[xPos] = self.SwitchLetters[element]
+                    preView = "".join(preView)
+                self.ui.plainTextEdit_6.setPlaceholderText(preView)
+                self.EnigmaDefault.RusCount[0] = SavedSettings[0]
+                self.EnigmaDefault.RusCount[1] = SavedSettings[1]
+                self.EnigmaDefault.RusCount[2] = SavedSettings[2]
+            elif "ENG" in lang.upper():
+                SavedSettings = [0, 0, 0]
+                SavedSettings[0] = self.EnigmaDefault.EngCount[0]
+                SavedSettings[1] = self.EnigmaDefault.EngCount[1]
+                SavedSettings[2] = self.EnigmaDefault.EngCount[2]
+                if self.SwitchingPanelBool:
+                    Text = list(Text)
+                    for xPos, element in enumerate(Text):
+                        if element in self.SwitchLetters:
+                            Text[xPos] = self.SwitchLetters[element]
+                    Text = "".join(Text)
+                preView = self.EnigmaDefault.EncryptWord("ENG", Text)
+                if self.SwitchingPanelBool:
+                    preView = list(preView)
+                    for xPos, element in enumerate(preView):
+                        if element in self.SwitchLetters:
+                            preView[xPos] = self.SwitchLetters[element]
+                    preView = "".join(preView)
+                self.ui.plainTextEdit_6.setPlaceholderText(preView)
+                self.EnigmaDefault.EngCount[0] = SavedSettings[0]
+                self.EnigmaDefault.EngCount[1] = SavedSettings[1]
+                self.EnigmaDefault.EngCount[2] = SavedSettings[2]
+        except Exception as exp:
+            print("FUNCTIONRETURN:: PreEncryptingWord:\n"+str(exp))
 
     def UseEnigmaFunctionWithAlpha(self):
-        lang = self.ui.comboBox.currentText()
-        row = self.ui.tableWidget.currentRow()
-        column = self.ui.tableWidget.currentColumn()
-        value = (self.ui.tableWidget.item(row, column)).text()
-        if value == "-":
-            return
-        if "RUS" in lang.upper():
-            if value in self.SwitchLetters and self.SwitchingPanelBool:
-                value = self.SwitchLetters[value]
-            anwser = self.EnigmaDefault.RUSLANG.find(self.EnigmaDefault.EncryptAlphaRus(value))
-            value = self.EnigmaDefault.RUSLANG[anwser]
-            if value in self.SwitchLetters and self.SwitchingPanelBool:
-                value = self.SwitchLetters[value]
-                anwser = self.EnigmaDefault.RUSLANG.find(value)
-            self.ui.spinBox_3.setValue(int(self.EnigmaDefault.RusCount[0]))
-            self.ui.spinBox_2.setValue(int(self.EnigmaDefault.RusCount[1]))
-            self.ui.spinBox.setValue(int(self.EnigmaDefault.RusCount[2]))
-        elif "ENG" in lang.upper():
-            if value in self.SwitchLetters and self.SwitchingPanelBool:
-                value = self.SwitchLetters[value]
-            anwser = self.EnigmaDefault.ENGLANG.find(self.EnigmaDefault.EncryptAlphaEng(value))
-            value = self.EnigmaDefault.ENGLANG[anwser]
-            if value in self.SwitchLetters and self.SwitchingPanelBool:
-                value = self.SwitchLetters[value]
-                anwser = self.EnigmaDefault.ENGLANG.find(value)
-            self.ui.spinBox_3.setValue(int(self.EnigmaDefault.EngCount[0]))
-            self.ui.spinBox_2.setValue(int(self.EnigmaDefault.EngCount[1]))
-            self.ui.spinBox.setValue(int(self.EnigmaDefault.EngCount[2]))
-        else:
-            return
-        
-        row = anwser // 7
-        column = anwser % 7
-        self.clicked_button.play()
-        self.ui.tableWidget_2.item(self.lastShowedAlpha[0], self.lastShowedAlpha[1]).setBackground(QColor(40, 40, 40))
-        self.lastShowedAlpha = [row, column]
-        self.ui.tableWidget_2.item(row, column).setBackground(QColor(255, 170, 0))
-        oldvalue = self.ui.plainTextEdit_2.toPlainText()
-        value = oldvalue + value
-        self.ui.plainTextEdit_2.clear()
-        self.ui.plainTextEdit_2.setPlainText(value)
+        try:
+            lang = self.ui.comboBox.currentText()
+            row = self.ui.tableWidget.currentRow()
+            column = self.ui.tableWidget.currentColumn()
+            value = (self.ui.tableWidget.item(row, column)).text()
+            if value == "-":
+                return
+            if "RUS" in lang.upper():
+                if value in self.SwitchLetters and self.SwitchingPanelBool:
+                    value = self.SwitchLetters[value]
+                anwser = self.EnigmaDefault.RUSLANG.find(self.EnigmaDefault.EncryptAlphaRus(value))
+                value = self.EnigmaDefault.RUSLANG[anwser]
+                if value in self.SwitchLetters and self.SwitchingPanelBool:
+                    value = self.SwitchLetters[value]
+                    anwser = self.EnigmaDefault.RUSLANG.find(value)
+                self.ui.spinBox_3.setValue(int(self.EnigmaDefault.RusCount[0]))
+                self.ui.spinBox_2.setValue(int(self.EnigmaDefault.RusCount[1]))
+                self.ui.spinBox.setValue(int(self.EnigmaDefault.RusCount[2]))
+            elif "ENG" in lang.upper():
+                if value in self.SwitchLetters and self.SwitchingPanelBool:
+                    value = self.SwitchLetters[value]
+                anwser = self.EnigmaDefault.ENGLANG.find(self.EnigmaDefault.EncryptAlphaEng(value))
+                value = self.EnigmaDefault.ENGLANG[anwser]
+                if value in self.SwitchLetters and self.SwitchingPanelBool:
+                    value = self.SwitchLetters[value]
+                    anwser = self.EnigmaDefault.ENGLANG.find(value)
+                self.ui.spinBox_3.setValue(int(self.EnigmaDefault.EngCount[0]))
+                self.ui.spinBox_2.setValue(int(self.EnigmaDefault.EngCount[1]))
+                self.ui.spinBox.setValue(int(self.EnigmaDefault.EngCount[2]))
+            else:
+                return
+            
+            row = anwser // 7
+            column = anwser % 7
+            self.clicked_button.play()
+            self.ui.tableWidget_2.item(self.lastShowedAlpha[0], self.lastShowedAlpha[1]).setBackground(QColor(40, 40, 40))
+            self.lastShowedAlpha = [row, column]
+            self.ui.tableWidget_2.item(row, column).setBackground(QColor(255, 170, 0))
+            oldvalue = self.ui.plainTextEdit_2.toPlainText()
+            value = oldvalue + value
+            self.ui.plainTextEdit_2.clear()
+            self.ui.plainTextEdit_2.setPlainText(value)
+        except Exception as exp:
+            print("FUNCTIONRETURN:: UseEnigmaFunctionWithAlpha:\n"+str(exp))
 
     def SetEnigmaSettings(self):
         try:
@@ -771,9 +862,9 @@ class mywindow(QtWidgets.QMainWindow):
             self.ui.label_26.setText(str(self.ui.spinBox_3.value()))
             self.ui.plainTextEdit_2.setPlainText("")
             self.ui.plainTextEdit_6.setPlainText("")
-            
         except Exception as exp:
-            print(exp)
+            print("FUNCTIONRETURN:: SetEnigmaSettings:\n"+str(exp))
+
 
     def DeleteLastSymbol(self):
         try:
@@ -822,54 +913,63 @@ class mywindow(QtWidgets.QMainWindow):
                 self.ui.spinBox_2.setValue(int(self.EnigmaDefault.EngCount[1]))
                 self.ui.spinBox.setValue(int(self.EnigmaDefault.EngCount[2]))
         except Exception as exp:
-            print(exp)
+            print("FUNCTIONRETURN:: DeleteLastSymbol:\n"+str(exp))
 
     def LoadSounds(self):
-        self.clicked_button = QSound('sounds/clicked.wav', self)
-        self.accept_button = QSound('sounds/accept.wav', self)
-        self.changePanel = QSound('sounds/changePanel.wav', self)
-        self.switchPanelOut = QSound("sounds/outSwitchPanel.wav", self)  
-        self.rotorPassSound = QSound("sounds/moveRotor.wav", self)
+        try:
+            self.clicked_button = QSound('sounds/clicked.wav', self)
+            self.accept_button = QSound('sounds/accept.wav', self)
+            self.changePanel = QSound('sounds/changePanel.wav', self)
+            self.switchPanelOut = QSound("sounds/outSwitchPanel.wav", self)  
+            self.rotorPassSound = QSound("sounds/moveRotor.wav", self)
 
-        self.ui.pushButton_2.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(1), self.changePanel.play()])
-        self.ui.pushButton_10.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(2), self.changePanel.play()])
-        self.ui.pushButton_26.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(3), self.changePanel.play()])
-        self.ui.pushButton_4.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(4), self.changePanel.play()])
-        self.ui.pushButton_16.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(5), self.changePanel.play()])
+            self.ui.pushButton_2.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(1), self.changePanel.play()])
+            self.ui.pushButton_10.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(2), self.changePanel.play()])
+            self.ui.pushButton_26.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(3), self.changePanel.play()])
+            self.ui.pushButton_4.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(4), self.changePanel.play()])
+            self.ui.pushButton_16.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(5), self.changePanel.play()])
 
-        self.ui.pushButton_3.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(0), self.changePanel.play()])
-        self.ui.pushButton_11.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(2), self.changePanel.play()])
-        self.ui.pushButton_27.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(3), self.changePanel.play()])
-        self.ui.pushButton_6.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(4), self.changePanel.play()])
-        self.ui.pushButton_17.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(5), self.changePanel.play()])
+            self.ui.pushButton_3.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(0), self.changePanel.play()])
+            self.ui.pushButton_11.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(2), self.changePanel.play()])
+            self.ui.pushButton_27.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(3), self.changePanel.play()])
+            self.ui.pushButton_6.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(4), self.changePanel.play()])
+            self.ui.pushButton_17.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(5), self.changePanel.play()])
 
-        self.ui.pushButton_41.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(0), self.changePanel.play()])
-        self.ui.pushButton_42.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(1), self.changePanel.play()])
-        self.ui.pushButton_43.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(3), self.changePanel.play()])
-        self.ui.pushButton_44.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(4), self.changePanel.play()])
-        self.ui.pushButton_19.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(5), self.changePanel.play()])
+            self.ui.pushButton_41.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(0), self.changePanel.play()])
+            self.ui.pushButton_42.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(1), self.changePanel.play()])
+            self.ui.pushButton_43.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(3), self.changePanel.play()])
+            self.ui.pushButton_44.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(4), self.changePanel.play()])
+            self.ui.pushButton_19.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(5), self.changePanel.play()])
 
-        self.ui.pushButton_29.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(0), self.changePanel.play()])
-        self.ui.pushButton_30.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(1), self.changePanel.play()])
-        self.ui.pushButton_12.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(2), self.changePanel.play()])
-        self.ui.pushButton_32.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(4), self.changePanel.play()])
-        self.ui.pushButton_18.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(5), self.changePanel.play()])
+            self.ui.pushButton_29.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(0), self.changePanel.play()])
+            self.ui.pushButton_30.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(1), self.changePanel.play()])
+            self.ui.pushButton_12.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(2), self.changePanel.play()])
+            self.ui.pushButton_32.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(4), self.changePanel.play()])
+            self.ui.pushButton_18.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(5), self.changePanel.play()])
 
-        self.ui.pushButton_7.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(0), self.changePanel.play()])
-        self.ui.pushButton_8.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(1), self.changePanel.play()])
-        self.ui.pushButton_14.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(2), self.changePanel.play()])
-        self.ui.pushButton_28.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(3), self.changePanel.play()])
-        self.ui.pushButton_46.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(5), self.changePanel.play()])
+            self.ui.pushButton_7.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(0), self.changePanel.play()])
+            self.ui.pushButton_8.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(1), self.changePanel.play()])
+            self.ui.pushButton_14.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(2), self.changePanel.play()])
+            self.ui.pushButton_28.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(3), self.changePanel.play()])
+            self.ui.pushButton_46.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(5), self.changePanel.play()])
 
-        self.ui.pushButton_20.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(0), self.changePanel.play()])
-        self.ui.pushButton_21.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(1), self.changePanel.play()])
-        self.ui.pushButton_22.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(2), self.changePanel.play()])
-        self.ui.pushButton_23.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(4), self.changePanel.play()])
-        self.ui.pushButton_47.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(3), self.changePanel.play()])
+            self.ui.pushButton_20.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(0), self.changePanel.play()])
+            self.ui.pushButton_21.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(1), self.changePanel.play()])
+            self.ui.pushButton_22.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(2), self.changePanel.play()])
+            self.ui.pushButton_23.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(4), self.changePanel.play()])
+            self.ui.pushButton_47.clicked.connect(lambda: [self.ui.tabWidget.setCurrentIndex(3), self.changePanel.play()])
 
-        self.ui.spinBox.valueChanged.connect(self.rotorPassSound.play)
-        self.ui.spinBox_2.valueChanged.connect(self.rotorPassSound.play)
-        self.ui.spinBox_3.valueChanged.connect(self.rotorPassSound.play)
+            self.ui.spinBox.valueChanged.connect(self.rotorPassSound.play)
+            self.ui.spinBox_2.valueChanged.connect(self.rotorPassSound.play)
+            self.ui.spinBox_3.valueChanged.connect(self.rotorPassSound.play)
+            self.ui.spinBox_4.valueChanged.connect(self.rotorPassSound.play)
+            self.ui.spinBox_8.valueChanged.connect(self.rotorPassSound.play)
+            self.ui.spinBox_9.valueChanged.connect(self.rotorPassSound.play)
+            self.ui.spinBox_5.valueChanged.connect(self.rotorPassSound.play)
+            self.ui.spinBox_6.valueChanged.connect(self.rotorPassSound.play)
+            self.ui.spinBox_7.valueChanged.connect(self.rotorPassSound.play)
+        except Exception as exp:
+            print("FUNCTIONRETURN:: LoadSounds:\n"+str(exp))
 
 def main():
     app = QtWidgets.QApplication([])

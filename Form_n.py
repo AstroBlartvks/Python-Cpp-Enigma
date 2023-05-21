@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'Form_n.ui'
+# Form implementation generated from reading ui file 'QT5/Form_n.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.7
 #
@@ -1367,13 +1367,13 @@ class Ui_MainWindow(object):
         self.label_32.setStyleSheet("color: rgb(230, 230, 230);")
         self.label_32.setObjectName("label_32")
         self.plainTextEdit_3 = QtWidgets.QPlainTextEdit(self.tab_5)
-        self.plainTextEdit_3.setGeometry(QtCore.QRect(10, 130, 541, 501))
+        self.plainTextEdit_3.setGeometry(QtCore.QRect(10, 130, 541, 281))
         self.plainTextEdit_3.setStyleSheet("color: rgb(230, 230, 230);\n"
 "font: 16pt \"Consolas\";\n"
 "background-color: rgb(35, 35, 35);")
         self.plainTextEdit_3.setObjectName("plainTextEdit_3")
         self.frame_6 = QtWidgets.QFrame(self.tab_5)
-        self.frame_6.setGeometry(QtCore.QRect(560, 650, 521, 41))
+        self.frame_6.setGeometry(QtCore.QRect(560, 620, 521, 41))
         self.frame_6.setStyleSheet("QPushButton{\n"
 "    border: 1px solid rgb(230, 230, 230);\n"
 "    background-color: rgb(230, 230, 230);\n"
@@ -1399,13 +1399,13 @@ class Ui_MainWindow(object):
         self.pushButton_48.setStyleSheet("")
         self.pushButton_48.setObjectName("pushButton_48")
         self.plainTextEdit_10 = QtWidgets.QPlainTextEdit(self.tab_5)
-        self.plainTextEdit_10.setGeometry(QtCore.QRect(560, 130, 521, 501))
+        self.plainTextEdit_10.setGeometry(QtCore.QRect(10, 420, 541, 271))
         self.plainTextEdit_10.setStyleSheet("color: rgb(230, 230, 230);\n"
 "font: 16pt \"Consolas\";\n"
 "background-color: rgb(35, 35, 35);")
         self.plainTextEdit_10.setObjectName("plainTextEdit_10")
         self.frame_7 = QtWidgets.QFrame(self.tab_5)
-        self.frame_7.setGeometry(QtCore.QRect(10, 650, 541, 41))
+        self.frame_7.setGeometry(QtCore.QRect(550, 570, 541, 41))
         self.frame_7.setStyleSheet("QPushButton{\n"
 "    border: 1px solid rgb(230, 230, 230);\n"
 "    background-color: rgb(230, 230, 230);\n"
@@ -1426,10 +1426,22 @@ class Ui_MainWindow(object):
         self.frame_7.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_7.setObjectName("frame_7")
         self.pushButton_49 = QtWidgets.QPushButton(self.frame_7)
-        self.pushButton_49.setGeometry(QtCore.QRect(10, 0, 521, 40))
+        self.pushButton_49.setGeometry(QtCore.QRect(20, 0, 511, 40))
         self.pushButton_49.setMinimumSize(QtCore.QSize(0, 40))
         self.pushButton_49.setStyleSheet("")
         self.pushButton_49.setObjectName("pushButton_49")
+        self.listWidget_2 = QtWidgets.QListWidget(self.tab_5)
+        self.listWidget_2.setGeometry(QtCore.QRect(570, 130, 511, 421))
+        self.listWidget_2.setStyleSheet("font-size: 14px;\n"
+"color: rgb(255, 255, 255);")
+        self.listWidget_2.setObjectName("listWidget_2")
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget_2.addItem(item)
+        self.label_33 = QtWidgets.QLabel(self.tab_5)
+        self.label_33.setGeometry(QtCore.QRect(570, 670, 511, 21))
+        self.label_33.setStyleSheet("font-size: 14px;\n"
+"color: rgb(255, 255, 255);")
+        self.label_33.setObjectName("label_33")
         self.tabWidget.addTab(self.tab_5, "")
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -1828,4 +1840,10 @@ class Ui_MainWindow(object):
         self.pushButton_48.setText(_translate("MainWindow", "Указать папку с моделями нейросети"))
         self.plainTextEdit_10.setPlaceholderText(_translate("MainWindow", "Здесь будет ваш текст после обработки нейросетью"))
         self.pushButton_49.setText(_translate("MainWindow", "Использовать нейросеть"))
+        __sortingEnabled = self.listWidget_2.isSortingEnabled()
+        self.listWidget_2.setSortingEnabled(False)
+        item = self.listWidget_2.item(0)
+        item.setText(_translate("MainWindow", "Нейросеть логи:"))
+        self.listWidget_2.setSortingEnabled(__sortingEnabled)
+        self.label_33.setText(_translate("MainWindow", "Не выбрана директория:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_5), _translate("MainWindow", "Страница"))
